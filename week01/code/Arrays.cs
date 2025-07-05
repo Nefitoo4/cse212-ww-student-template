@@ -13,7 +13,19 @@ public static class Arrays
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
 
-        return []; // replace this return statement with your own
+
+        // Create an array of doubles with the specified length.
+        double[] multiples = new double[length];
+
+        // Using a loop to populate the array.
+        // Each element at index i should be number * (i + 1)
+        for (int i = 0; i < length; i++)
+        {
+            multiples[i] = number * (i + 1);
+        }
+
+        // Return the filled array.
+        return multiples; // replace this return statement with your own
     }
 
     /// <summary>
@@ -29,5 +41,20 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+
+        
+        //Get the count of the list.
+        int n = data.Count;
+
+        //Create a temporary list to store the last amount element.
+        List<int> temp = data.GetRange(n - amount, amount);
+
+        //Remove the last amount element from the original list.
+        data.RemoveRange(n - amount, amount);
+
+        //Insert the saved elements at the begining of the list.
+        data.InsertRange(0, temp);
+
+        //The list is now rotated to the right by the amount positions.
     }
 }
