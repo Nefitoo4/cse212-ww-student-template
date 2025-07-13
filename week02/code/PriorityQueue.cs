@@ -32,13 +32,10 @@
 
         // Remove and return the item with the highest priority
         var value = _queue[highPriorityIndex].Value;
+        _queue.RemoveAt(highPriorityIndex);
         return value;
     }
 
-    public override string ToString()
-    {
-        return $"[{string.Join(", ", _queue)}]";
-    }
 }
 
 internal class PriorityItem

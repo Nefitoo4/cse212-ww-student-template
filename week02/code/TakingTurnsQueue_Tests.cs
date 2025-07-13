@@ -1,4 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 
 // TODO Problem 1 - Run test cases and record any defects the test code finds in the comment above the test method.
 // DO NOT MODIFY THE CODE IN THE TESTS in this file, just the comments above the tests. 
@@ -11,7 +13,51 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3) and
     // run until the queue is empty
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found:
+    public class Person
+    {
+        public string Name { get; }
+        public int Turns { get; }
+
+        public Person(string name, int turns)
+        {
+            Name = name;
+            Turns = turns;
+        }
+    }
+
+    public class TakingTurnsQueue
+    {
+        private Queue<(Person person, int turnsLeft)> queue = new();
+
+        public int Length => queue.Count;
+
+        public void AddPerson(string name, int turns)
+        {
+            queue.Enqueue((new Person(name, turns), turns));
+        }
+    }
+
+    public Person GetNextPerson()
+    {
+        if (Queue.Count == 0)
+            throw new InvalidOperationException("No one in the queue.");
+
+        var (person, turnsLeft) = Queue.Dequeue();
+
+        // For infinite turns (turns <= 0), always requeue with the original turns.
+        {
+            Queue.Enqueue((person, person.Turns));
+        }
+
+        // For finite turns, requeue if turns Left > 1
+        else if (turnsLeft > 1)
+        {
+            Queue.Enqueue((person, turnsLeft - 1));
+        }
+
+        return person;
+    }
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
