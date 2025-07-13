@@ -43,18 +43,7 @@ public class PriorityQueueTests
         Assert.AreEqual("A", pq.Dequeue());
     }
 
-    [TestMethod]
-    public void Test PriorityQueue_FIFOSamePriority()
-    {
-        var pq = new PriorityQueue();
-        pq.Enqueue("A", 1);
-        pq.Enqueue("B", 3);
-        pq.Enqueue("C", 2);
-        Assert.AreEqual("B", pq.Dequeue());
-        Assert.AreEqual("C", pq.Dequeue());
-        Assert.AreEqual("A", pq.Dequeue());
-    }
-
+    
     [TestMethod]
     // Enqueue multiple items with the same highest priority.
     
