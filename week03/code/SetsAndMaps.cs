@@ -22,7 +22,27 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        var SetOfWords = new HashSet<string>(words);
+        var results = new List<string>();
+
+        foreach (var word in words)
+        {
+            //Avoid words duplicated
+            if (word[0] == word[1])
+                continue;
+
+            var reverse = $"{word[1]}{word[0]}";
+
+            //if the reversed is in the set
+            if (SetOfWords.Contains(reverse))
+            {
+                //To avoid duplicates only add the pair once
+                results.Add($"{word} & {reverse}");
+                SetOfWords.Remove(word); //Remove both words to avoid duplicates
+                SetOfWords.Remove(reverse);
+            }
+        }
+        return results.ToArray();
     }
 
     /// <summary>
@@ -43,6 +63,21 @@ public static class SetsAndMaps
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+            //Verify that the line has enough fields
+            if (fields.Length < 4)
+                continue;
+
+            var degree = fields[3].Trim(); // Clean up the degree string
+
+            //If the grade already exists in the dictionary, increment its count
+            if (degrees.ContainsKey(degree))
+            {
+                degrees[degree]++;
+            }
+            else
+            {
+                degrees[degree] = 1;
+            }
         }
 
         return degrees;
@@ -67,7 +102,40 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        //Normalize the words by removing spaces and converting to lower case
+        word1 = word1.Replace(" ", "").ToLower();
+        word2 = word2.Replace(" ", "").ToLower();
+
+        // If words does not have the same length, they cannot be anagrams
+        if (word1.Length != word2.Length)
+            return false;
+
+        var letterCount = new Dictionary<char, int>();
+
+        //Count the letters in the word1
+        foreach (char c in word1)
+        {
+            if (letterCount.ContainsKey(c))
+                letterCount[c]++;
+            else
+                letterCount[c] = 1;
+        }
+
+        //Subtract the letters in word2
+        foreach (char c in word2)
+        {
+            if (!letterCount.ContainsKey(c))
+                return false;
+
+            letterCount[c]--;
+
+            //if the count goes below the negative are not anagrams
+            if (letterCount[c] < 0)
+                return false;
+        }
+
+        //At the end all the values should be zero
+        return letterCount.Values.All(count => count == 0);
     }
 
     /// <summary>
@@ -84,6 +152,22 @@ public static class SetsAndMaps
     /// https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
     /// 
     /// </summary>
+    /// Classes created to add the Map get; set properties
+    public class FeatureCollection
+    {
+        public List<Feature> Features { get; set; }
+    }
+
+    public class Feature
+    {
+        public Properties Properties { get; set; }
+    }
+
+    public class Properties
+    {
+        public string Place { get; set; }
+        public double? Mag { get; set; }
+    }
     public static string[] EarthquakeDailySummary()
     {
         const string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
@@ -101,6 +185,19 @@ public static class SetsAndMaps
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
         // 3. Return an array of these string descriptions.
-        return [];
+        var results = new List<string>();
+        foreach (var feature in featureCollection.Features)
+        {
+            var place = feature.Properties.Place;
+            var mag = feature.Properties.Mag;
+
+            //Basic validation to ensure mag is not null
+            if (!string.IsNullOrWhiteSpace(place) && mag.HasValue)
+            {
+                results.Add($"{place} - Mag {mag.Value}");
+            }
+
+        }
+        return results.ToArray();
     }
 }
